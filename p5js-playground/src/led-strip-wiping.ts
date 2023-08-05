@@ -51,7 +51,7 @@ const sketch = (p5: p5) => {
 
   }
 
-  let progress_slider;
+  let progress_slider: p5.Element;
   p5.setup = () => {
     const canvas = p5.createCanvas(800, 300);
     canvas.parent('canvas-led-strip');
@@ -68,7 +68,7 @@ const sketch = (p5: p5) => {
     const colors_start = Array(num_pixels).fill([30, 100, 100]);
     const colors_goal = Array(num_pixels).fill([60, 100, 100]);
     let colors = Array(num_pixels).fill([30, 100, 100]);
-    const progress_ratio = progress_slider.value();
+    const progress_ratio = Number(progress_slider.value());
     const weight = Array(num_pixels).fill(0.0);
 
     const backward = false;
