@@ -4,8 +4,6 @@ import p5 from "p5";
 
 const sketch = (p5: p5) => {
 
-
-
   const led_strip = (colors: any[], y: number = 200, pitch: number = 40, diameter: number = 36) => {
     for (var i = 0; i < colors.length; i++) {
       const x = i * pitch + pitch;
@@ -14,6 +12,7 @@ const sketch = (p5: p5) => {
       p5.textAlign(p5.CENTER, p5.CENTER);
 
       p5.fill("#2b2b2b");
+      p5.textSize(diameter * 0.5);
       p5.text(`${i}`, x, y)
     }
   };
@@ -46,20 +45,29 @@ const sketch = (p5: p5) => {
       const x = index * pitch + pitch;
       p5.textAlign(p5.CENTER, p5.CENTER);
       p5.fill("#2b2b2b");
+      p5.textSize(pitch * 0.25);
       p5.text(`${weight[index].toFixed(2)}`, x, y)
     }
-
   }
 
   let progress_slider: p5.Element;
+  let window_width: number = window.innerWidth;
+
+
+  const aspect_ratio = 0.25;
+  window.addEventListener("resize", () => {
+    window_width = window.innerWidth;
+    p5.resizeCanvas(window_width, window_width * aspect_ratio);
+    progress_slider.style('width', `${window_width}px`);
+  })
+
   p5.setup = () => {
-    const canvas = p5.createCanvas(800, 300);
+    const canvas = p5.createCanvas(window_width, window_width * aspect_ratio);
     canvas.parent('canvas-led-strip');
     p5.colorMode(p5.HSB, 100, 100, 100);
     progress_slider = p5.createSlider(0, 1.0, 0.5, 1 / 19);
-    progress_slider.style('width', '800px');
+    progress_slider.style('width', `${window_width}px`);
     progress_slider.parent('progress-slider');
-    // p5.noLoop();
   };
 
   p5.draw = () => {
@@ -88,9 +96,11 @@ const sketch = (p5: p5) => {
         remap(weight[index], 0.0, 1.0, colors_start[index][1], colors_goal[index][1]),
         remap(weight[index], 0.0, 1.0, colors_start[index][2], colors_goal[index][2])];
     }
-
-    led_strip(colors, 150);
-    weightText(weight, 120);
+    const height = window_width * aspect_ratio;
+    const pitch = window_width / (num_pixels + 1);
+    const y = height * 0.5;
+    led_strip(colors, y, pitch, 0.8 * pitch);
+    weightText(weight, y - pitch, pitch);
 
   };
 };
