@@ -55,24 +55,29 @@ const sketch = (p5: p5) => {
 
 
   const aspect_ratio = 0.25;
-  window.addEventListener("resize", () => {
+  const num_pixels = 18;
+
+  const onWindowResized = () => {
     window_width = window.innerWidth;
-    p5.resizeCanvas(window_width, window_width * aspect_ratio);
-    progress_slider.style('width', `${window_width}px`);
-  })
+    const canvas_height = window_width * aspect_ratio;
+    p5.resizeCanvas(window_width, canvas_height);
+    progress_slider.position(0.025 * window_width, 0.8 * canvas_height);
+    progress_slider.style('width', `${0.95 * window_width}px`);
+  }
+
+  window.addEventListener("resize", onWindowResized);
 
   p5.setup = () => {
-    const canvas = p5.createCanvas(window_width, window_width * aspect_ratio);
+    const canvas = p5.createCanvas(window_width, window_width);
     canvas.parent('canvas-led-strip');
     p5.colorMode(p5.HSB, 100, 100, 100);
-    progress_slider = p5.createSlider(0, 1.0, 0.5, 1 / 19);
-    progress_slider.style('width', `${window_width}px`);
-    progress_slider.parent('progress-slider');
+    progress_slider = p5.createSlider(0, 1.0, 0.5, 1 / (num_pixels + 1));
+    onWindowResized();// init sizing
   };
 
   p5.draw = () => {
     p5.background("#f7f7f7");
-    const num_pixels = 18;
+
     const colors_start = Array(num_pixels).fill([30, 100, 100]);
     const colors_goal = Array(num_pixels).fill([60, 100, 100]);
     let colors = Array(num_pixels).fill([30, 100, 100]);
@@ -100,7 +105,7 @@ const sketch = (p5: p5) => {
     const pitch = window_width / (num_pixels + 1);
     const y = height * 0.5;
     led_strip(colors, y, pitch, 0.8 * pitch);
-    weightText(weight, y - pitch, pitch);
+    weightText(weight, y - 0.75 * pitch, pitch);
 
   };
 };
