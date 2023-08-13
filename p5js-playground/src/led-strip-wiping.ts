@@ -100,8 +100,8 @@ const sketch = (p5: p5) => {
   p5.draw = () => {
     p5.background("#f7f7f7");
 
-    const colors_start = Array(num_pixels).fill([30, 100, 100]);
-    const colors_goal = Array(num_pixels).fill([60, 100, 100]);
+    const colors_start: number[][] = Array(num_pixels).fill([30, 100, 100]);
+    const colors_goal: number[][] = Array(num_pixels).fill([60, 100, 100]);
     let colors: number[][] = Array(num_pixels).fill([30, 100, 100]);
     const progress_ratio = Number(progress_slider.value());
     const is_backward = direction_radio.value() === "backward";
@@ -115,11 +115,49 @@ const sketch = (p5: p5) => {
       weight = wipe_weight(num_pixels, progress_ratio, blur_width, is_backward);
     }
 
-    for (let index = 0; index < colors.length; index++) {
-      colors[index] = [
-        remap(weight[index], 0.0, 1.0, colors_start[index][0], colors_goal[index][0]),
-        remap(weight[index], 0.0, 1.0, colors_start[index][1], colors_goal[index][1]),
-        remap(weight[index], 0.0, 1.0, colors_start[index][2], colors_goal[index][2])];
+    if (transition_radio.value() === "slide") {
+      let shifted_goal_colors = colors_start.concat();// copy array
+      let neck_idx = 0;
+      if (!is_backward) {
+        for (let index = num_pixels - 1; 0 <= index; index--) {
+          if (weight[index] < 0.99) {
+            shifted_goal_colors[index] = colors_goal[num_pixels - 1];
+          } else {
+            neck_idx = index;
+            break;
+          }
+        }
+        for (let index = neck_idx; 0 <= index; index--) {
+          shifted_goal_colors[index] = colors_goal[num_pixels - 1 - index];
+        }
+      } else {
+        for (let index = 0; index < num_pixels; index++) {
+          if (weight[index] < 0.99) {
+            shifted_goal_colors[index] = colors_goal[0];
+          } else {
+            neck_idx = index;
+            break;
+          }
+        }
+        for (let index = neck_idx; index < num_pixels; index++) {
+          shifted_goal_colors[index] = colors_goal[index];
+        }
+      }
+
+      for (let index = 0; index < colors.length; index++) {
+        colors[index] = [
+          remap(weight[index], 0.0, 1.0, colors_start[index][0], shifted_goal_colors[index][0]),
+          remap(weight[index], 0.0, 1.0, colors_start[index][1], shifted_goal_colors[index][1]),
+          remap(weight[index], 0.0, 1.0, colors_start[index][2], shifted_goal_colors[index][2])];
+      }
+
+    } else {
+      for (let index = 0; index < colors.length; index++) {
+        colors[index] = [
+          remap(weight[index], 0.0, 1.0, colors_start[index][0], colors_goal[index][0]),
+          remap(weight[index], 0.0, 1.0, colors_start[index][1], colors_goal[index][1]),
+          remap(weight[index], 0.0, 1.0, colors_start[index][2], colors_goal[index][2])];
+      }
     }
     const height = window_width * aspect_ratio;
     const pitch = window_width / (num_pixels + 1);
