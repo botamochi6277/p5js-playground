@@ -106,9 +106,14 @@ const sketch = (p5: p5) => {
     const progress_ratio = Number(progress_slider.value());
     const is_backward = direction_radio.value() === "backward";
     const blur_width = 4 / num_pixels;
-
+    let weight = Array(num_pixels).fill(0.0);
     // compute weights
-    const weight = wipe_weight(progress_ratio, blur_width, is_backward);
+
+    if (transition_radio.value() === "dissolve") {
+      weight = dissolve_weight(num_pixels, progress_ratio);
+    } else {
+      weight = wipe_weight(num_pixels, progress_ratio, blur_width, is_backward);
+    }
 
     for (let index = 0; index < colors.length; index++) {
       colors[index] = [
@@ -125,7 +130,7 @@ const sketch = (p5: p5) => {
   };
 
 
-  const wipe_weight = (progress_ratio: number, blur_width: number, is_backward: boolean) => {
+  const wipe_weight = (num_pixels: number, progress_ratio: number, blur_width: number, is_backward: boolean) => {
     const weight: number[] = Array(num_pixels).fill(0.0);
     for (let index = 0; index < num_pixels; index++) {
       const r = index / num_pixels;
@@ -137,6 +142,11 @@ const sketch = (p5: p5) => {
     }
     return weight;
   };
+
+  const dissolve_weight = (num_pixels: number, progress_ratio: number) => {
+    return Array(num_pixels).fill(progress_ratio);
+  }
+
 };
 
 new p5(sketch);
