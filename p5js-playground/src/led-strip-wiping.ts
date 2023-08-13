@@ -95,20 +95,25 @@ const sketch = (p5: p5) => {
     transition_radio.selected("wipe");
 
     onWindowResized();// init sizing
+    console.log(Array.from({ length: 5 }, (val, idx) => idx + 4));
   };
 
   p5.draw = () => {
     p5.background("#f7f7f7");
 
-    const colors_start: number[][] = Array(num_pixels).fill([30, 100, 100]);
-    const colors_goal: number[][] = Array(num_pixels).fill([60, 100, 100]);
-    let colors: number[][] = Array(num_pixels).fill([30, 100, 100]);
+    const color_idx = Array.from({ length: num_pixels }, (val, idx) => idx);
+    const hue1 = color_idx.map(idx => 10 * idx / num_pixels + 0);
+    const hue2 = color_idx.map(idx => 10 * idx / num_pixels + 60);
+
+    const colors_start: number[][] = hue1.map(h => [h, 60, 100]);
+    const colors_goal: number[][] = hue2.map(h => [h, 60, 100]);;
+    let colors: number[][] = colors_start.concat();
     const progress_ratio = Number(progress_slider.value());
     const is_backward = direction_radio.value() === "backward";
     const blur_width = 4 / num_pixels;
-    let weight = Array(num_pixels).fill(0.0);
-    // compute weights
+    let weight: number[] = Array(num_pixels).fill(0.0);
 
+    // compute weights
     if (transition_radio.value() === "dissolve") {
       weight = dissolve_weight(num_pixels, progress_ratio);
     } else {
@@ -128,7 +133,7 @@ const sketch = (p5: p5) => {
           }
         }
         for (let index = neck_idx; 0 <= index; index--) {
-          shifted_goal_colors[index] = colors_goal[num_pixels - 1 - index];
+          shifted_goal_colors[index] = colors_goal[num_pixels - 1 + index - neck_idx];
         }
       } else {
         for (let index = 0; index < num_pixels; index++) {
@@ -145,7 +150,7 @@ const sketch = (p5: p5) => {
       }
 
       for (let index = 0; index < colors.length; index++) {
-        colors[index] = color_easing(colors_start[index], colors_goal[index], weight[index]);
+        colors[index] = color_easing(colors_start[index], shifted_goal_colors[index], weight[index]);
       }
 
     } else {
@@ -167,7 +172,6 @@ const sketch = (p5: p5) => {
       remap(progress, 0.0, 1.0, from[1], to[1]),
       remap(progress, 0.0, 1.0, from[2], to[2])];
   }
-
 
   const wipe_weight = (num_pixels: number, progress_ratio: number, blur_width: number, is_backward: boolean) => {
     const weight: number[] = Array(num_pixels).fill(0.0);
