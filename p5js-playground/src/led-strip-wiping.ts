@@ -102,20 +102,13 @@ const sketch = (p5: p5) => {
 
     const colors_start = Array(num_pixels).fill([30, 100, 100]);
     const colors_goal = Array(num_pixels).fill([60, 100, 100]);
-    let colors = Array(num_pixels).fill([30, 100, 100]);
+    let colors: number[][] = Array(num_pixels).fill([30, 100, 100]);
     const progress_ratio = Number(progress_slider.value());
-    const weight = Array(num_pixels).fill(0.0);
-
     const is_backward = direction_radio.value() === "backward";
     const blur_width = 4 / num_pixels;
-    for (let index = 0; index < num_pixels; index++) {
-      const r = index / num_pixels;
-      if (!is_backward) {
-        weight[index] = hardSigmoid((1.0 - r) + (1.0 + blur_width) * progress_ratio - 1.0, blur_width);
-      } else {
-        weight[index] = hardSigmoid(r + (1.0 + blur_width) * progress_ratio - 1.0, blur_width);
-      }
-    }
+
+    // compute weights
+    const weight = wipe_weight(progress_ratio, blur_width, is_backward);
 
     for (let index = 0; index < colors.length; index++) {
       colors[index] = [
@@ -129,6 +122,20 @@ const sketch = (p5: p5) => {
     led_strip(colors, y, pitch, 0.8 * pitch);
     weightText(weight, y - 0.75 * pitch, pitch);
 
+  };
+
+
+  const wipe_weight = (progress_ratio: number, blur_width: number, is_backward: boolean) => {
+    const weight: number[] = Array(num_pixels).fill(0.0);
+    for (let index = 0; index < num_pixels; index++) {
+      const r = index / num_pixels;
+      if (!is_backward) {
+        weight[index] = hardSigmoid((1.0 - r) + (1.0 + blur_width) * progress_ratio - 1.0, blur_width);
+      } else {
+        weight[index] = hardSigmoid(r + (1.0 + blur_width) * progress_ratio - 1.0, blur_width);
+      }
+    }
+    return weight;
   };
 };
 
