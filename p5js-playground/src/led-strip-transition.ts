@@ -95,7 +95,6 @@ const sketch = (p5: p5) => {
     transition_radio.selected("wipe");
 
     onWindowResized();// init sizing
-    console.log(Array.from({ length: 5 }, (val, idx) => idx + 4));
   };
 
   p5.draw = () => {
