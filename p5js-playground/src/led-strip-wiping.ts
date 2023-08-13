@@ -145,18 +145,12 @@ const sketch = (p5: p5) => {
       }
 
       for (let index = 0; index < colors.length; index++) {
-        colors[index] = [
-          remap(weight[index], 0.0, 1.0, colors_start[index][0], shifted_goal_colors[index][0]),
-          remap(weight[index], 0.0, 1.0, colors_start[index][1], shifted_goal_colors[index][1]),
-          remap(weight[index], 0.0, 1.0, colors_start[index][2], shifted_goal_colors[index][2])];
+        colors[index] = color_easing(colors_start[index], colors_goal[index], weight[index]);
       }
 
     } else {
       for (let index = 0; index < colors.length; index++) {
-        colors[index] = [
-          remap(weight[index], 0.0, 1.0, colors_start[index][0], colors_goal[index][0]),
-          remap(weight[index], 0.0, 1.0, colors_start[index][1], colors_goal[index][1]),
-          remap(weight[index], 0.0, 1.0, colors_start[index][2], colors_goal[index][2])];
+        colors[index] = color_easing(colors_start[index], colors_goal[index], weight[index]);
       }
     }
     const height = window_width * aspect_ratio;
@@ -166,6 +160,13 @@ const sketch = (p5: p5) => {
     weightText(weight, y - 0.75 * pitch, pitch);
 
   };
+
+  const color_easing = (from: number[], to: number[], progress: number) => {
+    return [
+      remap(progress, 0.0, 1.0, from[0], to[0]),
+      remap(progress, 0.0, 1.0, from[1], to[1]),
+      remap(progress, 0.0, 1.0, from[2], to[2])];
+  }
 
 
   const wipe_weight = (num_pixels: number, progress_ratio: number, blur_width: number, is_backward: boolean) => {
