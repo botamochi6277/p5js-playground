@@ -100,7 +100,7 @@ const sketch = (p5: p5) => {
   p5.draw = () => {
     p5.background("#f7f7f7");
 
-    const color_idx = Array.from({ length: num_pixels }, (val, idx) => idx);
+    const color_idx = Array.from({ length: num_pixels }, (_, idx) => idx);
     const hue1 = color_idx.map(idx => 10 * idx / num_pixels + 0);
     const hue2 = color_idx.map(idx => 10 * idx / num_pixels + 60);
 
