@@ -1,4 +1,5 @@
 // https://chaika.hatenablog.com/entry/2022/12/08/083000
+import { resolve } from 'path'
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -13,6 +14,12 @@ export default defineConfig({
   //  `public` を指定した場合 `<root>/public` が静的ファイルの格納場所になる
   publicDir: 'public',
   build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'p5js-playground', 'index.html'),
+        led: resolve(__dirname, 'p5js-playground', 'led-strip-transition.html'),
+      },
+    },
     // `root` からの相対パスで指定する
     outDir: '../dist',
   },
