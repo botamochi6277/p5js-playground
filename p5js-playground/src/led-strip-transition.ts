@@ -4,7 +4,7 @@ import p5 from "p5";
 
 const sketch = (p5: p5) => {
 
-  const led_strip = (colors: any[], y: number = 200, pitch: number = 40, diameter: number = 36) => {
+  const ledStrip = (colors: any[], y: number = 200, pitch: number = 40, diameter: number = 36) => {
     for (var i = 0; i < colors.length; i++) {
       const x = i * pitch + pitch;
       p5.fill(colors[i]);
@@ -114,9 +114,9 @@ const sketch = (p5: p5) => {
 
     // compute weights
     if (transition_radio.value() === "dissolve") {
-      weight = dissolve_weight(num_pixels, progress_ratio);
+      weight = dissolveWeight(num_pixels, progress_ratio);
     } else {
-      weight = wipe_weight(num_pixels, progress_ratio, blur_width, is_backward);
+      weight = wipeWeight(num_pixels, progress_ratio, blur_width, is_backward);
     }
 
     if (transition_radio.value() === "slide") {
@@ -149,30 +149,30 @@ const sketch = (p5: p5) => {
       }
 
       for (let index = 0; index < colors.length; index++) {
-        colors[index] = color_easing(colors_start[index], shifted_goal_colors[index], weight[index]);
+        colors[index] = colorEasing(colors_start[index], shifted_goal_colors[index], weight[index]);
       }
 
     } else {
       for (let index = 0; index < colors.length; index++) {
-        colors[index] = color_easing(colors_start[index], colors_goal[index], weight[index]);
+        colors[index] = colorEasing(colors_start[index], colors_goal[index], weight[index]);
       }
     }
     const height = window_width * aspect_ratio;
     const pitch = window_width / (num_pixels + 1);
     const y = height * 0.5;
-    led_strip(colors, y, pitch, 0.8 * pitch);
+    ledStrip(colors, y, pitch, 0.8 * pitch);
     weightText(weight, y - 0.75 * pitch, pitch);
 
   };
 
-  const color_easing = (from: number[], to: number[], progress: number) => {
+  const colorEasing = (from: number[], to: number[], progress: number) => {
     return [
       remap(progress, 0.0, 1.0, from[0], to[0]),
       remap(progress, 0.0, 1.0, from[1], to[1]),
       remap(progress, 0.0, 1.0, from[2], to[2])];
   }
 
-  const wipe_weight = (num_pixels: number, progress_ratio: number, blur_width: number, is_backward: boolean) => {
+  const wipeWeight = (num_pixels: number, progress_ratio: number, blur_width: number, is_backward: boolean) => {
     const weight: number[] = Array(num_pixels).fill(0.0);
     for (let index = 0; index < num_pixels; index++) {
       const r = index / num_pixels;
@@ -185,7 +185,7 @@ const sketch = (p5: p5) => {
     return weight;
   };
 
-  const dissolve_weight = (num_pixels: number, progress_ratio: number) => {
+  const dissolveWeight = (num_pixels: number, progress_ratio: number) => {
     return Array(num_pixels).fill(progress_ratio);
   }
 
