@@ -1,45 +1,8 @@
 import p5 from "p5";
-
-
-
+import { showPixels } from "./led_strip";
+import { remap, hardSigmoid } from "./signal";
 const sketch = (p5: p5) => {
 
-  const ledStrip = (colors: any[], y: number = 200, pitch: number = 40, diameter: number = 36) => {
-    for (var i = 0; i < colors.length; i++) {
-      const x = i * pitch + pitch;
-      p5.fill(colors[i]);
-      p5.circle(x, y, diameter);
-      p5.textAlign(p5.CENTER, p5.CENTER);
-
-      p5.fill("#2b2b2b");
-      p5.textSize(diameter * 0.5);
-      p5.text(`${i}`, x, y)
-    }
-  };
-
-  const remap = (x: number, in_min: number, in_max: number, out_min: number, out_max: number, chip: boolean = false) => {
-    if (chip) {
-      if (x < in_min) {
-        return out_min;
-      }
-      if (in_max < x) {
-        return out_max;
-      }
-    }
-
-    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-  };
-
-
-  const hardSigmoid = (x: number, tilt: number = 1.0, scale: number = 1.0) => {
-    if (x < 0.0) {
-      return 0.0;
-    } else if (0.0 <= x && x < tilt) {
-      return (scale / tilt) * x;
-    } else {
-      return 1.0;
-    }
-  }
   const weightText = (weight: number[], y: number = 200, pitch: number = 40) => {
     for (let index = 0; index < weight.length; index++) {
       const x = index * pitch + pitch;
@@ -160,7 +123,7 @@ const sketch = (p5: p5) => {
     const height = window_width * aspect_ratio;
     const pitch = window_width / (num_pixels + 1);
     const y = height * 0.5;
-    ledStrip(colors, y, pitch, 0.8 * pitch);
+    showPixels(p5, colors, y, pitch, 0.8 * pitch);
     weightText(weight, y - 0.75 * pitch, pitch);
 
   };
