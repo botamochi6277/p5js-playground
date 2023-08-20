@@ -10,10 +10,10 @@ const sketch = (p5: p5) => {
     const y_max = Math.max(...y);
 
     for (let index = 0; index < x.length; index++) {
-      const xx = remap(x[index], x[0], x[x.length - 1], 0, window.innerWidth);
+      const xx = remap(x[index], x[0], x[x.length - 1], 0, p5.width);
       const yy = remap(y[index], y_min, y_max,
-        aspect_ratio * window.innerWidth * 0.9,
-        aspect_ratio * window.innerWidth * 0.1);
+        p5.height * 0.9,
+        p5.height * 0.1);
       p5.circle(xx, yy, diameter);
 
     }
@@ -26,7 +26,7 @@ const sketch = (p5: p5) => {
     window_width = window.innerWidth;
     const canvas_height = window_width * aspect_ratio;
     p5.resizeCanvas(window_width, canvas_height);
-    p5.draw();
+    p5.redraw();
   }
 
   window.addEventListener("resize", onWindowResized);
@@ -40,11 +40,21 @@ const sketch = (p5: p5) => {
   };
 
   p5.draw = () => {
+    const search_params = new URLSearchParams(window.location.search);
+
     p5.background("#2b2b2b");
     const idx = Array.from({ length: 100 }, (_, k) => k);
     const x = idx.map(i => remap(i, 0, idx.length - 1, -1, 2));
-    const y = x.map(xx => hardSigmoid(xx));
-    plotLine(x, y, 10);
+
+    switch (search_params.get("signal")) {
+      case "hard-sigmoid":
+        const y = x.map(xx => hardSigmoid(xx));
+        plotLine(x, y, 10);
+        break;
+      default:
+        p5.circle(p5.width / 2, p5.height / 2, 100);
+        break;
+    }
   }
 }
 
