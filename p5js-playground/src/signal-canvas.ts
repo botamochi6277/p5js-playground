@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { remap, hardSigmoid, trianglePulse } from "./signal";
+import { remap, hardSigmoid, trianglePulse, quadInOut, quadPulse } from "./signal";
 const sketch = (p5: p5) => {
 
 
@@ -53,6 +53,14 @@ const sketch = (p5: p5) => {
         break;
       case "triangle-pulse":
         y = x.map(xx => trianglePulse(xx));
+        plotLine(x, y, 10);
+        break;
+      case "quad-inout":
+        y = x.map(xx => quadInOut(xx));
+        plotLine(x, y, 10);
+        break;
+      case "quad-pulse":
+        y = x.map(xx => quadPulse(xx));
         plotLine(x, y, 10);
         break;
       default:
