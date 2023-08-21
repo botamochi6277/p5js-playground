@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { remap, hardSigmoid } from "./signal";
+import { remap, hardSigmoid, trianglePulse } from "./signal";
 const sketch = (p5: p5) => {
 
 
@@ -45,10 +45,14 @@ const sketch = (p5: p5) => {
     p5.background("#2b2b2b");
     const idx = Array.from({ length: 100 }, (_, k) => k);
     const x = idx.map(i => remap(i, 0, idx.length - 1, -1, 2));
-
+    let y = x.concat();
     switch (search_params.get("signal")) {
       case "hard-sigmoid":
-        const y = x.map(xx => hardSigmoid(xx));
+        y = x.map(xx => hardSigmoid(xx));
+        plotLine(x, y, 10);
+        break;
+      case "triangle-pulse":
+        y = x.map(xx => trianglePulse(xx));
         plotLine(x, y, 10);
         break;
       default:

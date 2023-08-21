@@ -25,5 +25,5 @@ export const hardSigmoid = (x: number, duration: number = 1.0, scale: number = 1
 }
 
 export const trianglePulse = (x: number, duration: number = 1.0, scale: number = 1.0) => {
-  return hardSigmoid(x, duration / 2, scale) - hardSigmoid(x - duration / 2, duration / 2, -scale)
+  return hardSigmoid(x, duration / 2, scale) - hardSigmoid(x - duration / 2, duration / 2, scale)
 }
