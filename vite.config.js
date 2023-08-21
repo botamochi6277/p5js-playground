@@ -18,6 +18,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'p5js-playground', 'index.html'),
         led: resolve(__dirname, 'p5js-playground', 'led-strip-transition.html'),
+        signal: resolve(__dirname, 'p5js-playground', 'signal-canvas.html'),
       },
     },
     // `root` からの相対パスで指定する
