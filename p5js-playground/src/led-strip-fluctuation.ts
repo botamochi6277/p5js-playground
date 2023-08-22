@@ -23,7 +23,6 @@ const sketch = (p5: p5) => {
   let scale_slider: p5.Element;
   let width_slider: p5.Element;
   let window_width: number = window.innerWidth;
-  let direction_radio: RadioButton;
   let transition_radio: RadioButton;
 
 
