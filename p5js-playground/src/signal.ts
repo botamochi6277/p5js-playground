@@ -25,7 +25,7 @@ export const hardSigmoid = (x: number, duration: number = 1.0, scale: number = 1
 }
 
 export const trianglePulse = (x: number, duration: number = 1.0, scale: number = 1.0) => {
-  return hardSigmoid(x, duration / 2, scale) - hardSigmoid(x - duration / 2, duration / 2, scale)
+  return scale * (hardSigmoid(x, duration / 2, 1.0) - hardSigmoid(x - duration / 2, duration / 2, 1.0))
 }
 
 export const quadInOut = (x: number, duration: number = 1.0, scale: number = 1.0) => {
@@ -42,5 +42,5 @@ export const quadInOut = (x: number, duration: number = 1.0, scale: number = 1.0
 }
 
 export const quadPulse = (x: number, duration: number = 1.0, scale: number = 1.0) => {
-  return quadInOut(x, duration / 2, scale) - quadInOut(x - duration / 2, duration / 2, scale)
+  return scale * (quadInOut(x, duration / 2, 1.0) - quadInOut(x - duration / 2, duration / 2, 1.0))
 }
